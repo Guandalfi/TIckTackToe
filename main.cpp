@@ -52,23 +52,89 @@ bool is_draw(int game_grid[3][3])
 
 bool is_winner(int game_grid[3][3])
 {
+    // verify if winner in horizontal lines    
     for (size_t i = 0; i < 3; i++)
     {
-        int rows[3];
+        int row[3] = {0,0,0};
         for (size_t j = 0; j < 3; j++)
         {
-            rows[j] = game_grid[i][j];
+            if (game_grid[i][j] != 0)
+            {
+                row[j] = game_grid[i][j];
+            }
         }
-        for (size_t i = 0; i < 3; i++)
+
+        for (size_t k = 0; k < 3; k++)
+        {
+            if (row[0] != 0 && row[0] == row[1] && row[0] == row[2])
+            {
+                return true;
+            }
+        }
+    }
+    
+    // verify if winner in vertical lines
+    for (size_t i = 0; i < 3; i++)
     {
-        std::cout << rows[i];
-    } 
-    } 
-    return true;   
+        int column[3] = {0,0,0};
+        for (size_t j = 0; j < 3; j++)
+        {
+            if (game_grid[j][i] != 0)
+            {
+                column[j] = game_grid[j][i];
+            }
+        }
+
+        for (size_t k = 0; k < 3; k++)
+        {
+            if (column[0] != 0 && column[0] == column[1] && column[0] == column[2])
+            {
+                return true;
+            }
+        }
+    }
+
+    // verify winner in diagonal line left to right
+    for (size_t i = 0; i < 3; i++)
+    {
+        int diagonal[3];
+        if (game_grid[i][i] != 0)
+        {
+            diagonal[i] = game_grid[i][i];
+        }
+        for (size_t k = 0; k < 3; k++)
+        {
+            if (diagonal[0] != 0 && diagonal[0] == diagonal[1] && diagonal[0] == diagonal[2])
+            {
+                return true;
+            }
+        }
+    }
+    
+    // verify winner in diagonal line right to left
+    int column_pos = 2;
+    for (size_t i = 0; i < 3; i++)
+    {
+        int diagonal[3];
+        if (game_grid[i][column_pos] != 0)
+        {
+            diagonal[i] = game_grid[i][column_pos];
+            column_pos--;
+        }
+        for (size_t k = 0; k < 3; k++)
+        {
+            if (diagonal[0] != 0 && diagonal[0] == diagonal[1] && diagonal[0] == diagonal[2])
+            {
+                return true;
+            }
+        }
+    }
+
+    return false;
 }
 
 
-int main(int argc, char const *argv[])
+int main()
 {   
     int game_grid[3][3] = {
         {0, 0, 0}, //[0][x] linha 0
@@ -88,11 +154,18 @@ int main(int argc, char const *argv[])
 
         if (is_draw(game_grid))
         {
-            std::cout << "It's a draw !";
+            std::cout << "Empate !!!";
+            char reset;
+            std::cout << "Deseja continuar jogando ?(y/n): ";
+            std::cin >> reset;
+            if (reset == 'y')
+            {
+                system("cls");
+                main();
+            }
+            std::cout << "\nObrigado por jogar, volte novamente !!!";
             return 0;
         }
-        
-        is_winner(game_grid); 
 
         int change; // 1 = 'X'; 2 = 'O'
         int grid_position; // player position input
@@ -149,6 +222,42 @@ int main(int argc, char const *argv[])
             continue;
         }
 
+        if (is_winner(game_grid))
+        {
+            if (player_x)
+            {
+                system("cls");
+                display_game_grid(game_grid);
+                std::cout << "X Venceu !!!" << std::endl;
+
+                char reset;
+                std::cout << "Deseja continuar jogando ?(y/n): ";
+                std::cin >> reset;
+                if (reset == 'y')
+                {
+                    system("cls");
+                    main();
+                }
+                
+            }else
+            {
+                system("cls");
+                display_game_grid(game_grid);
+                std::cout << "O Venceu !!!" << std::endl;
+
+                char reset;
+                std::cout << "Deseja continuar jogando ?(y/n): ";
+                std::cin >> reset;
+                if (reset == 'y')
+                {
+                    system("cls");
+                    main();
+                }
+            }
+            std::cout << "\nObrigado por jogar, volte novamente !!!";
+            return 0;
+        }
+
         if (player_x)
         {
             player_o = true;
@@ -160,5 +269,6 @@ int main(int argc, char const *argv[])
         }
         system("cls");
     }
+    std::cout << "\nObrigado por jogar, volte novamente !!!";
     return 0;
 }
